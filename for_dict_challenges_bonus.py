@@ -35,6 +35,7 @@ import uuid
 import datetime
 
 import lorem
+from collections import Counter
 
 
 def generate_chat_history():
@@ -66,5 +67,94 @@ def generate_chat_history():
     return messages
 
 
+def requrtion(message_id, reply_for_1, len_tread_1):
+    if reply_for_1 != None:
+        for message in history:
+            if message["id"]==reply_for_1:
+                len_tread_1 += 1
+                len_tread_1 = requrtion(message["id"], message["reply_for"], len_tread_1)[0]
+    return [len_tread_1, message_id]
+
+
+def exercise1():
+    ids = [mes['sent_by'] for mes in history]
+    ctr = Counter(ids)
+    print(f"Айди пользователя, который написал больше всех сообщений: {ctr.most_common(1)[0][0]}")
+
+
+def exercise2():
+    replys = [mes['reply_for'] for mes in history]
+    user_list = []
+    for message in history:
+        for reply in replys:
+            if reply != None and message["id"] == reply:
+                user = message["sent_by"]
+                user_list.append(user)
+    ctr1 = Counter(user_list)
+    print(f"Айди пользователя, на сообщения которого больше всего отвечали: {ctr1.most_common(1)[0][0]}")
+
+
+def exercise3():
+    seen_users = {}
+    for message in history:
+        if seen_users.get(message["sent_by"]) != None:
+            seen_users[message["sent_by"]].union(message["seen_by"])
+        else:
+            seen_users.update({message["sent_by"]: message["seen_by"]})
+            seen_users[message["sent_by"]] = set(seen_users[message["sent_by"]])
+    seen_user_max = 0
+    seen_user_max_id = []
+    for seen_users_id in seen_users.values():
+        if len(seen_users_id) >= seen_user_max:
+            seen_user_max = len(seen_users_id)
+    for user_id, seen_users_id in seen_users.items():
+        if len(seen_users_id) == seen_user_max:
+            seen_user_max_id.append(str(user_id))
+    seen_user_max_id = ", ".join(seen_user_max_id)
+    print(f"Айди пользователей, сообщения которых видело больше всего уникальных пользователей: {seen_user_max_id}")
+
+
+def exercise4():
+    time_am = 0
+    time_pm = 0
+    time_pm_2 = 0
+    for message in history:
+        if message['sent_at'].strftime('%H:%M') < "12:00":
+            time_am += 1
+        elif "12:00" <= message['sent_at'].strftime('%H:%M') < "18:00":
+            time_pm += 1
+        else:
+            time_pm_2 += 1
+    if time_am >= time_pm and time_am >= time_pm_2:
+        print("В чате больше всего сообщений утром")
+    elif time_pm >= time_am and time_pm >= time_pm_2:
+        print("В чате больше всего сообщений днём")
+    elif time_pm_2 >= time_am and time_pm_2 >= time_pm:
+        print("В чате больше всего сообщений вечером")
+
+
+def exercise5():
+    len_tread_max = 0
+    len_treads_max = []
+    len_tread = [0,0]
+    len_treads_max_id = []
+    for message in history:
+        if message["reply_for"] != None:
+            len_tread = requrtion(message["id"],message["reply_for"], 1)
+        if len_tread[0] >= len_tread_max:
+            len_tread_max = len_tread[0]
+            len_treads_max.append(len_tread) 
+    for len_tread_new in len_treads_max:
+        if len_tread_new[0] == len_tread_max and str(len_tread_new[1]) not in len_treads_max_id:
+            len_treads_max_id.append(str(len_tread_new[1]))
+    treads_max_id_messages = ", ".join(len_treads_max_id)
+    print(f"Идентификаторы сообщений, которые стали началом для самых длинных тредов (цепочек ответов): {treads_max_id_messages}")
+
+
 if __name__ == "__main__":
-    print(generate_chat_history())
+    history = generate_chat_history()
+    exercise1()
+    exercise2()
+    exercise3()
+    exercise4()
+    exercise5()

@@ -1,3 +1,5 @@
+from collections import Counter
+
 # Задание 1
 # Дан список учеников, нужно посчитать количество повторений каждого имени ученика
 # Пример вывода:
@@ -13,13 +15,10 @@ def exercise1():
         {'first_name': 'Маша'},
         {'first_name': 'Петя'},
     ]
-    students_2 =[]
-    for student in students:
-        if (student in students_2) == False:
-            name_count = students.count(student)
-            name = student["first_name"]
-            print(f"{name}: {name_count}")
-            students_2.append(student)
+    names = [person['first_name'] for person in students]
+    ctr = Counter(names)
+    for name, count in ctr.items():
+        print(f"{name}: {count}")
 
 
     # Задание 2
@@ -35,14 +34,9 @@ def exercise2():
         {'first_name': 'Маша'},
         {'first_name': 'Оля'},
     ]
-    name_count = 0
-    students_3 = []
-    for student in students:
-        if (student in students_3) == False and students.count(student) > name_count:
-            name = student["first_name"]
-            name_count = students.count(student)
-            students_3.append(student)
-    print(f"Самое частое имя среди учеников: {name}")
+    names = [person['first_name'] for person in students]
+    ctr = Counter(names)
+    print(f"Самое частое имя среди учеников: {ctr.most_common(1)[0][0]}")
             
 
 
@@ -70,14 +64,9 @@ def exercise3():
         ],
     ]
     for i in range(len(school_students)):
-        name_count = 0
-        students_4 = []
-        for student in school_students[i]:
-            if (student in students_4) == False and school_students[i].count(student) > name_count:
-                name = student["first_name"]
-                name_count = school_students[i].count(student)
-                students_4.append(student)
-        print(f"Самое частое имя в классе {i + 1}: {name}")
+        names = [person['first_name'] for person in school_students[i]]
+        ctr = Counter(names)
+        print(f"Самое частое имя в классе {i + 1}: {ctr.most_common(1)[0][0]}")
 
 
     # Задание 4
@@ -130,22 +119,19 @@ def exercise5():
         'Олег': True,
         'Миша': True,
     }
-    boys_max = 0
-    girls_max = 0
-    for i in range(len(school)):
-        girls = 0
-        boys = 0
-        for name in school[i]["students"]:
-            if is_male[name['first_name']]:
-                boys = boys + 1
-            else: 
-                girls = girls + 1
-        if boys > boys_max:
-            class_boys = school[i]["class"]
-        if girls > girls_max:
-            class_girls = school[i]["class"]
-    print(f"Больше всего мальчиков в классе {class_boys}")
-    print(f"Больше всего девочек в классе {class_girls}")
+    number_male = 0
+    number_female = 0
+    for classes in school:
+        female = [name['first_name'] for name in classes['students'] if not is_male[name['first_name']]]
+        male = [name['first_name'] for name in classes['students'] if is_male[name['first_name']]]
+        if len(female) > number_female:
+           class_female = classes['class']
+           number_female = len(female)
+        if len(male) > number_male:
+           class_male = classes['class']
+           number_male = len(male)
+    print(f"Больше всего мальчиков в классе {class_male}")       
+    print(f"Больше всего девочек в классе {class_female}")
 
 if __name__ == "__main__":
     exercise1()

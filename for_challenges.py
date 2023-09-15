@@ -18,8 +18,8 @@ def exercise1():
 def exercise2():
     print("Задание 2")
     names = ['Оля', 'Петя', 'Вася', 'Маша']
-    for i in range(len(names)):
-        print(f"{names[i]}: {i + 1}")
+    for name in names:
+        print(f"{name}: {len(name)}")
 
 
 

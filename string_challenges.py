@@ -8,16 +8,15 @@ def exercise2():
     # Вывести количество букв "а" в слове
     print("Вывести количество букв а в слове")
     word = 'Архангельск'
-    number =word.count("А") + word.count("а")
-    print(number)
+    print(word.lower().count('а'))
 
 def exercise3():
     # Вывести количество гласных букв в слове
     print("Вывести количество гласных букв в слове")
     word = 'Архангельск'
-    letters = ["А","а","е", "Е", "ё", "Ё", "и", "И", "о", "О", "у", "У", "ы", "Ы", "э", "Э", "ю", "Ю", "я", "Я"]
+    letters = "аеёиоуыэюя"
     number = 0
-    for letter in word:
+    for letter in word.lower():
         if letter in letters:
             number = number + 1
     print(number)
